@@ -60,6 +60,37 @@
 			"problemMatcher": []
 		},
 		{
+			"label": "Flash DFU (select slot)",
+			"type": "shell",
+			"command": "./tools/win64/dfu-util.exe",
+			"args": [
+				"-a",
+				"${input:dfu_slot}",
+				"-t",
+				"1024",
+				"-D",
+				"build/stm32f4-debug/gas-lighter-fw_signed.bin"
+			],
+			"problemMatcher": [],
+			"detail": "Flash via USB DFU"
+		},
+		{
+			"label": "DFU: List Devices",
+			"type": "shell",
+			"command": "./tools/win64/dfu-util.exe",
+			"args": [
+				"-l"
+			],
+			"problemMatcher": [],
+			"presentation": {
+				"reveal": "always",
+				"panel": "dedicated",
+				"clear": true,
+				"showReuseMessage": false
+			},
+			"detail": "Show list DFU-devices"
+		},
+		{
 			"label": "Run qemu-arm (gdb)",
 			"type": "shell",
 			"command": "qemu-system-arm",
@@ -120,6 +151,24 @@
 					"endsPattern": "^$"
 				}
 			}
+		}
+	],
+	"inputs": [
+		{
+			"id": "dfu_slot",
+			"description": "choose slot",
+			"type": "pickString",
+			"options": [
+				{
+					"label": "0 - Primary Slot (direct write without update)",
+					"value": "0"
+				},
+				{
+					"label": "1 - Secondary Slot (for OTA-update by means of MCUboot)",
+					"value": "1"
+				}
+			],
+			"default": "1"
 		}
 	]
 }
