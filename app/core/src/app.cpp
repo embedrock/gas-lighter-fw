@@ -39,8 +39,23 @@ void init(void){
 #endif
 //  	SEGGER_RTT_WriteString( 0, "SEGGER Real-Time-Terminal Started\n" );
 }
+#include "tim.h"
 
+void start_breath(){
+	static uint16_t pwmData[300];
+    const uint16_t max_val = htim3.Init.Period - 1;
+	for (uint16_t i = 100; i < 150; ++i){
+		pwmData[i] = static_cast<uint16_t>(max_val); 
+	}
+    for (uint16_t i = 0; i < 100; ++i) {
+        uint32_t val = (static_cast<uint32_t>(i) * i * max_val) / (99 * 99);
+        pwmData[i] = static_cast<uint16_t>(val); 
+        pwmData[249 - i] = static_cast<uint16_t>(val); 
+    }
+    HAL_TIM_PWM_Start_DMA(&htim3, TIM_CHANNEL_3, (uint32_t*)pwmData, 300);
+}
 void setup(void){
+	start_breath();
 	printf("Firmware version: %s\n", FW_VERSION_STR);
 	printf("Build: %s %s (git: %s)\n", FW_BUILD_DATE, FW_BUILD_TIME, FW_GIT_HASH);
 	printf("Version: %d.%d.%d\n", FW_VERSION_MAJOR, FW_VERSION_MINOR, FW_VERSION_PATCH);
