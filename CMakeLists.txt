@@ -10,7 +10,7 @@ project(gas-lighter-fw VERSION ${FW_VERSION} LANGUAGES C CXX ASM)
 option(USE_SYSTEM_VIEW "enable segger system view" OFF)
 if(USE_SYSTEM_VIEW)
     add_compile_definitions(USE_SYTEM_VIEW)
-    set(SEGGER_LIBS segger_rtt segger_sysview )
+    set(SEGGER_LIBS segger_sysview )
 else()
     set(SEGGER_LIBS "")
 endif()
@@ -68,6 +68,7 @@ if(${TARGET} STREQUAL "stm32f4")
         cli_service
         fatfs_core
         CMSISDSP
+        segger_rtt
         ${SEGGER_LIBS}
         lcd_service
         wave_starter_service
@@ -90,6 +91,7 @@ elseif(${TARGET} STREQUAL "stm32f7")
         freertos_cli_core
         cli_service
         fatfs_core
+        segger_rtt
         ${SEGGER_LIBS}
         config_service
         status_service

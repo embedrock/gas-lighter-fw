@@ -1,5 +1,5 @@
+add_subdirectory(RTT)
 if(USE_SYSTEM_VIEW)
-    add_subdirectory(RTT)
     add_subdirectory(SystemView)
 endif()
 add_subdirectory(freertos_support)

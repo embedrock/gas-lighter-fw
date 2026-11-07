@@ -15,8 +15,10 @@
 #include <cstdio>
 #include "config_wrapper.hpp"
 #include <type_traits>
-#ifdef USE_SYTEM_VIEW
+#ifdef PRINTF_RTT
 	#include "SEGGER_RTT.h"
+#endif
+#ifdef USE_SYTEM_VIEW
 	#include "SEGGER_SYSVIEW.h"
 #endif
 
