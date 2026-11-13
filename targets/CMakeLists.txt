@@ -62,6 +62,7 @@ set(BSP_SOURCES
     ${TARGET}/Core/Src/W25Qxx.c
     ${TARGET}/Core/Src/common.c
     ${TARGET}/Core/Src/Driver_Flash.c
+    ${TARGET}/Core/Src/ads1115_driver.c
 )
 elseif(${TARGET} STREQUAL "stm32f7")
 set(BSP_SOURCES
