@@ -15,7 +15,6 @@
 #include <cstdio>
 #include "config_wrapper.hpp"
 #include <type_traits>
-#include "ads1115_driver.h"
 #ifdef PRINTF_RTT
 	#include "SEGGER_RTT.h"
 #endif
@@ -68,7 +67,6 @@ void setup(void){
 	} else {
 		printf("FW Hash: %s\r\n", FW_GIT_HASH);
 	}
-	ads1115_init(1,1);
 	FATFS_Init();
 	xTaskCreate([](void* param){
 		cli_service_init();
