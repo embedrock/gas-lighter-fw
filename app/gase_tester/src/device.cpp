@@ -91,6 +91,7 @@ void heartbit_callback(void){
 		lcd_print(LCD_PRINTER_LINE2,  LCD_PRINTER_OFFSET_ZERO, "%03ld.%05ld", 
 			(uint32_t)(ch0 / ch1), //todo: to float
 			((uint32_t)(ch0 % ch1)*100000)/ch1);
+	}
 
 }
 

@@ -5,7 +5,7 @@
 #define ADS1115_REG_CONVERSION  0x00
 #define ADS1115_REG_CONFIG      0x01
 
-extern I2C_HandleTypeDef hi2c1;
+extern I2C_HandleTypeDef hi2c3;
 
 // Базовые настройки (gain, data rate), без привязки к каналу
 static uint16_t base_config = 0;
@@ -29,7 +29,7 @@ int16_t ads1115_read_channel(uint8_t channel) {
     config |= ((0x04 + channel) << 12);
     
     // Запускаем конвертацию
-    HAL_I2C_Mem_Write(&hi2c1, ADS1115_ADDR, ADS1115_REG_CONFIG,
+    HAL_I2C_Mem_Write(&hi2c3, ADS1115_ADDR, ADS1115_REG_CONFIG,
                       I2C_MEMADD_SIZE_8BIT, (uint8_t*)&config, 2, 100);
     
     // Ждём завершения. При 128 SPS нужно ~8 мс, берём с запасом
@@ -38,7 +38,7 @@ int16_t ads1115_read_channel(uint8_t channel) {
     
     // Читаем результат
     uint16_t raw = 0;
-    HAL_I2C_Mem_Read(&hi2c1, ADS1115_ADDR, ADS1115_REG_CONVERSION,
+    HAL_I2C_Mem_Read(&hi2c3, ADS1115_ADDR, ADS1115_REG_CONVERSION,
                      I2C_MEMADD_SIZE_8BIT, (uint8_t*)&raw, 2, 100);
     
     return (int16_t)raw;
