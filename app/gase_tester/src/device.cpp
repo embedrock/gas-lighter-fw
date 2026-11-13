@@ -12,6 +12,7 @@
 
 #include "version.h"
 #include "version_check.h"
+#include "ads1115_driver.h"
 
 namespace device{
 
@@ -45,25 +46,25 @@ void pulse_measure_data_ready_callback(pulse_measure_msg_t* data){
 //		data->result[Pulse_Measure_ADC_Channel_2], 
 //		data->result[Pulse_Measure_ADC_Channel_3], 
 //		data->result[Pulse_Measure_ADC_Channel_4]);
-	lcd_print(LCD_PRINTER_LINE1, LCD_PRINTER_OFFSET_ZERO, "%04ld:%04ld %04ld:%04ld\n\r", 
-		data->result[Pulse_Measure_ADC_Channel_1], data->result[Pulse_Measure_ADC_Channel_2], 
-		data->result[Pulse_Measure_ADC_Channel_3], data->result[Pulse_Measure_ADC_Channel_4]);
-	if(data->result[Pulse_Measure_ADC_Channel_2] != 0){
-		lcd_print(LCD_PRINTER_LINE2,  LCD_PRINTER_OFFSET_ZERO, "%03ld.%05ld", 
-			(uint32_t)(data->result[Pulse_Measure_ADC_Channel_1] / data->result[Pulse_Measure_ADC_Channel_2]), //todo: to float
-			((uint32_t)(data->result[Pulse_Measure_ADC_Channel_1] % data->result[Pulse_Measure_ADC_Channel_2])*100000)/data->result[Pulse_Measure_ADC_Channel_2]);
-	}
-	else{
-		lcd_print(LCD_PRINTER_LINE2,  LCD_PRINTER_OFFSET_ZERO, "ch2 zero ");
-	}
-	if(data->result[Pulse_Measure_ADC_Channel_4] != 0){
-		lcd_print(LCD_PRINTER_LINE2, LCD_PRINTER_OFFSET_HALF, "%03ld.%05ld", 
-			(uint32_t)(data->result[Pulse_Measure_ADC_Channel_3] / data->result[Pulse_Measure_ADC_Channel_4]), 
-			((uint32_t)(data->result[Pulse_Measure_ADC_Channel_3] % data->result[Pulse_Measure_ADC_Channel_4])*100000)/data->result[Pulse_Measure_ADC_Channel_4]);
-	}
-	else{
-		lcd_print(LCD_PRINTER_LINE2,  LCD_PRINTER_OFFSET_ZERO, "ch4 zero ");
-	}
+	// lcd_print(LCD_PRINTER_LINE1, LCD_PRINTER_OFFSET_ZERO, "%04ld:%04ld %04ld:%04ld\n\r", 
+	// 	data->result[Pulse_Measure_ADC_Channel_1], data->result[Pulse_Measure_ADC_Channel_2], 
+	// 	data->result[Pulse_Measure_ADC_Channel_3], data->result[Pulse_Measure_ADC_Channel_4]);
+	// if(data->result[Pulse_Measure_ADC_Channel_2] != 0){
+	// 	lcd_print(LCD_PRINTER_LINE2,  LCD_PRINTER_OFFSET_ZERO, "%03ld.%05ld", 
+	// 		(uint32_t)(data->result[Pulse_Measure_ADC_Channel_1] / data->result[Pulse_Measure_ADC_Channel_2]), //todo: to float
+	// 		((uint32_t)(data->result[Pulse_Measure_ADC_Channel_1] % data->result[Pulse_Measure_ADC_Channel_2])*100000)/data->result[Pulse_Measure_ADC_Channel_2]);
+	//}
+	//else{
+	//	lcd_print(LCD_PRINTER_LINE2,  LCD_PRINTER_OFFSET_ZERO, "ch2 zero ");
+	//}
+	//if(data->result[Pulse_Measure_ADC_Channel_4] != 0){
+	//	lcd_print(LCD_PRINTER_LINE2, LCD_PRINTER_OFFSET_HALF, "%03ld.%05ld", 
+	//		(uint32_t)(data->result[Pulse_Measure_ADC_Channel_3] / data->result[Pulse_Measure_ADC_Channel_4]), 
+	//		((uint32_t)(data->result[Pulse_Measure_ADC_Channel_3] % data->result[Pulse_Measure_ADC_Channel_4])*100000)/data->result[Pulse_Measure_ADC_Channel_4]);
+	//}
+	//else{
+	//	lcd_print(LCD_PRINTER_LINE2,  LCD_PRINTER_OFFSET_ZERO, "ch4 zero ");
+	//}
 }
 
 void wave_measure_data_ready_callback(waveMeasureFFT_result_t* result){
@@ -81,6 +82,16 @@ void wave_measure_data_ready_callback(waveMeasureFFT_result_t* result){
 
 void heartbit_callback(void){
 
+	int16_t ch0 = ads1115_read_channel(0);  // ждёт ~130 мс
+    int16_t ch1 = ads1115_read_channel(1);  // ждёт ~130 мс
+	
+	lcd_print(LCD_PRINTER_LINE1, LCD_PRINTER_OFFSET_ZERO, "%04ld:%04ld %04ld:%04ld\n\r", 
+		ch0, ch1, 0, 0);
+	if(ch1 != 0){
+		lcd_print(LCD_PRINTER_LINE2,  LCD_PRINTER_OFFSET_ZERO, "%03ld.%05ld", 
+			(uint32_t)(ch0 / ch1), //todo: to float
+			((uint32_t)(ch0 % ch1)*100000)/ch1);
+
 }
 
 void init(void){
@@ -91,7 +102,7 @@ void init(void){
 	wave_starter_init(&wave_gen_config);
 	wave_starter_run(&wave_gen_config);
 	pulse_measure_init(&pulse_measure_config);
-
+ads1115_init(2, 0);
 	if(puse_measure_set_divider(config.pdiv.value) == 0){
 		std::printf("pulse period divider %ld setted\r\n", config.pdiv.value);
 	}
